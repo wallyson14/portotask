@@ -1,850 +1,467 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.35em' font-size='70'%3E🚢%3C/text%3E%3C/svg%3E">
-<title>PortoTask - Gestão</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="script.js"></script>
-<link rel="stylesheet" href="style.css" />
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.35em' font-size='70'%3E🚢%3C/text%3E%3C/svg%3E">
+    <title>PortoTask - Gestão</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
 
-<div class="screen active" id="screen-login">
-  <div style="width:100%; display:flex; align-items:center; justify-content:center; min-height:100vh; background:linear-gradient(135deg,#0f1f35 0%,#1a3a5c 60%,#0b9e77 100%);">
-    <div style="display:flex; flex-direction:column; align-items:center; gap:24px; width:420px; padding:20px;">
-      
-      <div style="text-align:center; color:white;">
-        <div style="font-size:40px; margin-bottom:8px;"></div>
-        <div style="font-size:26px; font-weight:800; letter-spacing:-.5px;">PortoTask</div>
-        <div style="font-size:13px; color:#8aabb8; margin-top:4px;">Sistema de Gestão de Atividades</div>
-      </div>
-
-      <div class="login-box" style="width:100%;">
-
-         <div class="divider">
-          <div class="divider-line"></div>
-          <div class="divider-text">Entrar Como</div>
-          <div class="divider-line"></div>
-        </div>
-
-        <div class="role-grid">
-          <div class="role-card selected" id="role-manager" onclick="selectRole('manager')">
-            <span class="role-card-icon">📊</span>
-            <div class="role-card-name">Gestor</div>
-            <div class="role-card-desc">Acesso completo ao dashboard</div>
-          </div>
-          <div class="role-card" id="role-employee" onclick="selectRole('employee')">
-            <span class="role-card-icon">👷</span>
-            <div class="role-card-name">Funcionário</div>
-            <div class="role-card-desc">Minhas atividades do dia</div>
-          </div>
-        </div>
-        <div style="font-size:16px; font-weight:700; color:var(--gray800); margin-bottom:4px;">Entrar no sistema</div>
-        <div style="font-size:12px; color:var(--gray500); margin-bottom:22px;">Acesse com suas credenciais</div>
-
-        <div class="form-group">
-          <label class="form-label">Usuário</label>
-          <input class="form-control" type="text" value="Admin-teste" placeholder="usuario@itaqui.com.br" />
-        </div>
-        <div class="form-group" style="margin-bottom:8px;">
-          <label class="form-label">Senha</label>
-          <input class="form-control" type="password" value="••••••••" placeholder="Sua senha" />
-        </div>
-
-        <div style="font-size:12px; color:var(--gray500); margin-bottom:20px; text-align:right; cursor:pointer; color:var(--teal);">Esqueci minha senha</div>
-
-       
-
-        <button class="btn btn-primary btn-full" onclick="doLogin()" style="font-size:15px; padding:12px;">
-          Acessar sistema →
-        </button>
-
-        <div style="text-align:center; font-size:11px; color:var(--gray400); margin-top:16px;">
-          Porto-Task · v1.0 · Protótipo
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="screen" id="screen-manager-app">
-  <div class="app-layout">
-
-    <nav class="sidebar">
-      <div class="sidebar-brand">
-        <div class="sidebar-logo-box">🚢</div>
-        <div>
-          <div class="sidebar-brand-name">PortoTask</div>
-        </div>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-section-label">Visão geral</div>
-        <button class="nav-item active" id="nav-dashboard" onclick="showManagerScreen('dashboard')">
-          <span class="nav-icon">📊</span> Dashboard
-        </button>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-section-label">Gestão</div>
-        <button class="nav-item" id="nav-employees" onclick="showManagerScreen('employees')">
-          <span class="nav-icon">👷</span> Funcionários
-        </button>
-        <button class="nav-item" id="nav-activities" onclick="showManagerScreen('activities')">
-          <span class="nav-icon">📋</span> Atividades
-          <span class="nav-badge">3</span>
-        </button>
-        <button class="nav-item" id="nav-new-activity" onclick="showManagerScreen('new-activity')">
-          <span class="nav-icon">➕</span> Nova Atividade
-        </button>
-        <button class="nav-item" id="nav-new-employee" onclick="showManagerScreen('new-employee')">
-          <span class="nav-icon">👤</span> Novo Funcionário
-        </button>
-      </div>
-
-      <div class="sidebar-section">
-        <div class="sidebar-section-label">Relatórios</div>
-        <button class="nav-item" id="nav-reports" onclick="showManagerScreen('reports')">
-          <span class="nav-icon">📈</span> Relatórios
-        </button>
-      </div>
-
-      <div class="sidebar-footer">
-        <div class="sidebar-user">
-          <div class="avatar av-teal" style="width:36px;height:36px;font-size:13px;">CR</div>
-          <div>
-            <div class="sidebar-user-name">Carlos Ramos</div>
-            <div class="sidebar-user-role">Gerente de Operações</div>
-          </div>
-        </div>
-        <button class="nav-item" onclick="doLogout()" style="color:#6b7280;">
-          <span class="nav-icon">🚪</span> Sair
-        </button>
-      </div>
-    </nav>
-
-    <div class="main-content">
-
-      <div id="manager-dashboard">
-        <div class="topbar">
-          <div>
-            <div class="topbar-title">Dashboard Operacional</div>
-            <div class="topbar-subtitle">Acompanhamento das atividades</div>
-          </div>
-          <div class="topbar-actions">
-            <div class="topbar-date" id="dash-date"></div>
-            <button class="btn btn-secondary btn-sm">🔔 3 alertas</button>
-            <button class="btn btn-primary btn-sm" onclick="showManagerScreen('new-activity')">+ Nova Atividade</button>
-          </div>
-        </div>
-
-        <div class="page-content">
-          <div class="alert alert-amber">
-            ⚠️ <span><strong>2 funcionários</strong> com atividades atrasadas e sem justificativa. <span style="text-decoration:underline;cursor:pointer;" onclick="showManagerScreen('activities')">Ver detalhes →</span></span>
-          </div>
-
-          <div class="metric-grid">
-            <div class="metric-card">
-              <div class="metric-icon mi-teal">✅</div>
-              <div>
-                <div class="metric-label">Conclusão Geral</div>
-                <div class="metric-value">62%</div>
-                <div class="metric-delta delta-up">↑ +15% </div>
-              </div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-icon mi-blue">📋</div>
-              <div>
-                <div class="metric-label">Atividades Hoje</div>
-                <div class="metric-value">13</div>
-                <div class="metric-delta delta-up">8 concluídas e 5 pendentes</div>
-              </div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-icon mi-amber">👷</div>
-              <div>
-                <div class="metric-label">Funcionários Ativos</div>
-                <div class="metric-value">6</div>
-                <div class="metric-delta">de 8 cadastrados</div>
-              </div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-icon mi-red">⏰</div>
-              <div>
-                <div class="metric-label">Atrasos c/ Justif.</div>
-                <div class="metric-value">3</div>
-                <div class="metric-delta delta-down">↑ 2 sem justificativa</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="dashboard-grid">
-
-            <div>
-              <div class="card" style="margin-bottom:20px;">
-                <div class="section-header">
-                  <div>
-                    <div class="section-title">Equipe: Progresso do Dia</div>
-                    <div class="section-sub">Atualizado às 14h32</div>
-                  </div>
-                  <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('employees')">Ver todos</button>
+    <div class="screen active" id="screen-login">
+        <div style="width:100%; display:flex; align-items:center; justify-content:center; min-height:100vh; background:linear-gradient(135deg,#0f1f35 0%,#1a3a5c 60%,#0b9e77 100%);">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:24px; width:420px; padding:20px;">
+                
+                <div style="text-align:center; color:white;">
+                    <div style="font-size:40px; margin-bottom:8px;"></div>
+                    <div style="font-size:26px; font-weight:800; letter-spacing:-.5px;">PortoTask</div>
+                    <div style="font-size:13px; color:#8aabb8; margin-top:4px;">Sistema de Gestão de Atividades</div>
                 </div>
 
-                <div id="dash-team-list"></div>
-              </div>
-
-              <div class="card">
-                <div class="section-header">
-                  <div class="section-title">Progresso da Semana</div>
-                  <div class="topbar-date" style="font-size:11px;">Semana 18</div>
-                </div>
-                <canvas id="weekChart" height="160"></canvas>
-              </div>
-            </div>
-
-            <div>
-              <div class="card" style="margin-bottom:20px;">
-                <div class="section-title" style="margin-bottom:14px;">⚠️ Atividades Pendentes</div>
-                <div id="dash-pending"></div>
-              </div>
-
-              <div class="card" style="margin-bottom:20px;">
-                <div class="section-title" style="margin-bottom:14px;">📌 Justificativas de Hoje</div>
-                <div id="dash-justificativas"></div>
-              </div>
-
-              <div class="card">
-                <div class="section-title" style="margin-bottom:14px;">📊 Por Setor</div>
-                <canvas id="sectorChart" height="180"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="manager-employees" style="display:none;">
-        <div class="topbar">
-          <div>
-            <div class="topbar-title">Funcionários</div>
-            <div class="topbar-subtitle">Cadastro e acompanhamento da equipe</div>
-          </div>
-          <div class="topbar-actions">
-            <input class="form-control" type="search" placeholder="🔍 Buscar funcionário..." style="width:200px;height:36px;" />
-            <button class="btn btn-primary btn-sm" onclick="showManagerScreen('new-employee')">+ Novo Funcionário</button>
-          </div>
-        </div>
-        <div class="page-content">
-          <div class="chip-row" style="margin-bottom:20px;">
-            <div class="chip active">Todos (8)</div>
-            <div class="chip">Operadores (3)</div>
-            <div class="chip">Conferentes (2)</div>
-            <div class="chip">Motoristas (2)</div>
-            <div class="chip">Supervisores (1)</div>
-          </div>
-          <div class="grid-3" id="emp-cards-grid"></div>
-        </div>
-      </div>
-
-      <div id="manager-emp-detail" style="display:none;">
-        <div class="topbar">
-          <div>
-            <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('employees')">← Voltar</button>
-          </div>
-          <div style="margin-left:12px;">
-            <div class="topbar-title" id="detail-topbar-name">Detalhes do Funcionário</div>
-            <div class="topbar-subtitle">Atividades designadas e histórico</div>
-          </div>
-          <div class="topbar-actions">
-            <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('new-activity')">+ Designar Atividade</button>
-            <button class="btn btn-danger btn-sm">✏️ Editar</button>
-          </div>
-        </div>
-        <div class="page-content" id="emp-detail-content"></div>
-      </div>
-
-      <div id="manager-activities" style="display:none;">
-        <div class="topbar">
-          <div>
-            <div class="topbar-title">Atividades</div>
-            <div class="topbar-subtitle">Gerenciamento completo de tarefas da equipe</div>
-          </div>
-          <div class="topbar-actions">
-            <input class="form-control" type="search" placeholder="🔍 Buscar atividade..." style="width:200px;height:36px;" />
-            <button class="btn btn-primary btn-sm" onclick="showManagerScreen('new-activity')">+ Nova Atividade</button>
-          </div>
-        </div>
-        <div class="page-content">
-          <div class="chip-row" style="margin-bottom:20px;">
-            <div class="chip active">Todas (13)</div>
-            <div class="chip">Concluídas (8)</div>
-            <div class="chip">Em andamento (2)</div>
-            <div class="chip">Pendentes (3)</div>
-          </div>
-          <div class="card">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Status</th>
-                    <th>Atividade</th>
-                    <th>Funcionário</th>
-                    <th>Setor</th>
-                    <th>Tempo</th>
-                    <th>Progresso</th>
-                    <th>Justificativa</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody id="activities-table"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="manager-new-activity" style="display:none;">
-        <div class="topbar">
-          <div>
-            <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('activities')">← Voltar</button>
-          </div>
-          <div style="margin-left:12px;">
-            <div class="topbar-title">Nova Atividade</div>
-            <div class="topbar-subtitle">Cadastrar e designar atividade para a equipe</div>
-          </div>
-        </div>
-        <div class="page-content">
-          <div class="grid-2">
-            <div>
-              <div class="card">
-                <div class="form-section">
-                  <div class="form-section-title">📋 Informações da Atividade</div>
-                  <div class="form-group">
-                    <label class="form-label">Nome da Atividade *</label>
-                    <input class="form-control" type="text" placeholder="Ex: Descarga navio São João — Container A7" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Descrição</label>
-                    <textarea class="form-control" placeholder="Descreva os detalhes da atividade, pontos de atenção, equipamentos necessários..."></textarea>
-                  </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label class="form-label">Categoria *</label>
-                      <select class="form-control">
-                        <option>Descarga de Navio</option>
-                        <option>Transporte Interno</option>
-                        <option>Conferência de Carga</option>
-                        <option>Inventário</option>
-                        <option>Relatório Operacional</option>
-                        <option>Manutenção</option>
-                        <option>Outro</option>
-                      </select>
+                <div class="login-box" style="width:100%;">
+                    <div class="divider">
+                        <div class="divider-line"></div>
+                        <div class="divider-text">Entrar Como</div>
+                        <div class="divider-line"></div>
                     </div>
-                    <div class="form-group">
-                      <label class="form-label">Prioridade</label>
-                      <select class="form-control">
-                        <option>🟡 Normal</option>
-                        <option>🔴 Alta</option>
-                        <option>⚡ Urgente</option>
-                        <option>🟢 Baixa</option>
-                      </select>
+
+                    <div class="role-grid">
+                        <div class="role-card selected" id="role-manager" onclick="selectRole('manager')">
+                            <span class="role-card-icon">📊</span>
+                            <div class="role-card-name">Gestor</div>
+                            <div class="role-card-desc">Acesso completo ao dashboard</div>
+                        </div>
+                        <div class="role-card" id="role-employee" onclick="selectRole('employee')">
+                            <span class="role-card-icon">👷</span>
+                            <div class="role-card-name">Funcionário</div>
+                            <div class="role-card-desc">Minhas atividades do dia</div>
+                        </div>
                     </div>
-                  </div>
-                </div>
 
-                <div class="form-section">
-                  <div class="form-section-title">⏱ Tempo e Prazo</div>
-                  <div class="form-row">
+                    <div style="font-size:16px; font-weight:700; color:var(--gray800); margin-bottom:4px;">Entrar no sistema</div>
+                    <div style="font-size:12px; color:var(--gray500); margin-bottom:22px;">Acesse com suas credenciais</div>
+
                     <div class="form-group">
-                      <label class="form-label">Tempo Estimado *</label>
-                      <input class="form-control" type="number" placeholder="4" min="1" />
+                        <label class="form-label">Usuário</label>
+                        <input class="form-control" type="text" value="Admin-teste" placeholder="usuario@itaqui.com.br" />
                     </div>
-                    <div class="form-group">
-                      <label class="form-label">Unidade</label>
-                      <select class="form-control">
-                        <option>Horas</option>
-                        <option>Dias</option>
-                        <option>Minutos</option>
-                      </select>
+                    <div class="form-group" style="margin-bottom:8px;">
+                        <label class="form-label">Senha</label>
+                        <input class="form-control" type="password" value="••••••••" placeholder="Sua senha" />
                     </div>
-                  </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label class="form-label">Data de Início</label>
-                      <input class="form-control" type="date" />
+
+                    <div style="font-size:12px; color:var(--gray500); margin-bottom:20px; text-align:right; cursor:pointer; color:var(--teal);">Esqueci minha senha</div>
+
+                    <button class="btn btn-primary btn-full" onclick="doLogin()" style="font-size:15px; padding:12px;">
+                        Acessar sistema →
+                    </button>
+
+                    <div style="text-align:center; font-size:11px; color:var(--gray400); margin-top:16px;">
+                        Porto-Task · v1.0 · Protótipo
                     </div>
-                    <div class="form-group">
-                      <label class="form-label">Prazo Final</label>
-                      <input class="form-control" type="date" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="screen" id="screen-manager-app">
+        <div class="app-layout">
+
+            <nav class="sidebar" id="app-sidebar">
+                <div class="sidebar-brand">
+                    <div class="sidebar-logo-box">🚢</div>
+                    <div>
+                        <div class="sidebar-brand-name">PortoTask</div>
                     </div>
-                  </div>
                 </div>
 
-                <div class="form-section">
-                  <div class="form-section-title">👷 Designação</div>
-                  <div class="form-group">
-                    <label class="form-label">Designar para *</label>
-                    <select class="form-control">
-                      <option value="">Selecione um funcionário...</option>
-                      <option>João Silva — Operador de Pátio</option>
-                      <option>Maria Costa — Conferente</option>
-                      <option>Ricardo Alves — Motorista</option>
-                      <option>Ana Souza — Operadora de Pátio</option>
-                      <option>Pedro Lima — Supervisor</option>
-                      <option>Fernanda Nunes — Conferente</option>
-                      <option>Lucas Martins — Motorista</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Local / Setor</label>
-                    <select class="form-control">
-                      <option>Pátio Principal</option>
-                      <option>Galpão 1</option>
-                      <option>Galpão 2</option>
-                      <option>Galpão 3</option>
-                      <option>Galpão 4</option>
-                      <option>Galpão 5</option>
-                      <option>Cais — Berço 1</option>
-                      <option>Cais — Berço 2</option>
-                      <option>Porto Sul</option>
-                    </select>
-                  </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-label">Visão geral</div>
+                    <button class="nav-item active" id="nav-dashboard" onclick="showManagerScreen('dashboard')">
+                        <span class="nav-icon">📊</span> Dashboard
+                    </button>
                 </div>
 
-                <div style="display:flex; gap:12px; justify-content:flex-end;">
-                  <button class="btn btn-secondary" onclick="showManagerScreen('activities')">Cancelar</button>
-                  <button class="btn btn-primary" onclick="saveActivity()">✅ Cadastrar Atividade</button>
+                <div class="sidebar-section">
+                    <div class="sidebar-section-label">Gestão</div>
+                    <button class="nav-item" id="nav-employees" onclick="showManagerScreen('employees')">
+                        <span class="nav-icon">👷</span> Funcionários
+                    </button>
+                    <button class="nav-item" id="nav-activities" onclick="showManagerScreen('activities')">
+                        <span class="nav-icon">📋</span> Atividades
+                        <span class="nav-badge">3</span>
+                    </button>
+                    <button class="nav-item" id="nav-new-activity" onclick="showManagerScreen('new-activity')">
+                        <span class="nav-icon">➕</span> Nova Atividade
+                    </button>
+                    <button class="nav-item" id="nav-new-employee" onclick="showManagerScreen('new-employee')">
+                        <span class="nav-icon">👤</span> Novo Funcionário
+                    </button>
                 </div>
-              </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-section-label">Relatórios</div>
+                    <button class="nav-item" id="nav-reports" onclick="showManagerScreen('reports')">
+                        <span class="nav-icon">📈</span> Relatórios
+                    </button>
+                </div>
+
+                <div class="sidebar-footer">
+                    <div class="sidebar-user">
+                        <div class="avatar av-teal" style="width:36px;height:36px;font-size:13px;">CR</div>
+                        <div>
+                            <div class="sidebar-user-name">Carlos Ramos</div>
+                            <div class="sidebar-user-role">Gerente de Operações</div>
+                        </div>
+                    </div>
+                    <button class="nav-item" onclick="doLogout()" style="color:#6b7280;">
+                        <span class="nav-icon">🚪</span> Sair
+                    </button>
+                </div>
+            </nav>
+
+            <div class="main-content">
+
+                <div id="manager-dashboard">
+                    <div class="topbar">
+                        <button class="btn btn-secondary btn-sm" id="btn-toggle-sidebar" onclick="document.getElementById('app-sidebar').classList.toggle('open')" style="display: none; padding: 8px 12px; margin-right: 4px;">☰</button>
+                        <div>
+                            <div class="topbar-title">Dashboard Operacional Inteligente</div>
+                            <div class="topbar-subtitle">Visão em tempo real da eficiência do porto</div>
+                        </div>
+                        <div class="topbar-actions">
+                            <div class="topbar-date" id="dash-date"></div>
+                            <button class="btn btn-primary btn-sm" onclick="showManagerScreen('new-activity')">+ Nova Atividade</button>
+                        </div>
+                    </div>
+
+                    <div class="page-content">
+                        
+                        <div class="metric-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                            <div class="card" style="padding: 16px; border-left: 4px solid var(--blue); display: flex; flex-direction: column; justify-content: center;">
+                                <div style="font-size: 11px; color: var(--gray500); font-weight: 700; text-transform: uppercase;">Tarefas Hoje</div>
+                                <div style="font-size: 28px; font-weight: 800; color: var(--gray800); margin-top: 4px;">128</div>
+                            </div>
+                            <div class="card" style="padding: 16px; border-left: 4px solid var(--teal); display: flex; flex-direction: column; justify-content: center;">
+                                <div style="font-size: 11px; color: var(--gray500); font-weight: 700; text-transform: uppercase;">Concluídas</div>
+                                <div style="font-size: 28px; font-weight: 800; color: var(--teal); margin-top: 4px;">94</div>
+                            </div>
+                            <div class="card" style="padding: 16px; border-left: 4px solid var(--amber); display: flex; flex-direction: column; justify-content: center;">
+                                <div style="font-size: 11px; color: var(--gray500); font-weight: 700; text-transform: uppercase;">Em Andamento</div>
+                                <div style="font-size: 28px; font-weight: 800; color: var(--amber); margin-top: 4px;">17</div>
+                            </div>
+                            <div class="card" style="padding: 16px; border-left: 4px solid var(--red); display: flex; flex-direction: column; justify-content: center;">
+                                <div style="font-size: 11px; color: var(--gray500); font-weight: 700; text-transform: uppercase;">Atrasadas</div>
+                                <div style="font-size: 28px; font-weight: 800; color: var(--red); margin-top: 4px;">8</div>
+                            </div>
+                            <div class="card" style="background: linear-gradient(135deg, var(--teal) 0%, var(--teal2) 100%); color: white; padding: 16px; display: flex; flex-direction: column; justify-content: center;">
+                                <div style="font-size: 11px; opacity: 0.9; font-weight: 700; text-transform: uppercase;">Eficiência Geral</div>
+                                <div style="font-size: 28px; font-weight: 800; margin-top: 4px;">73%</div>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-grid" style="margin-bottom: 24px;">
+                            <div class="card" style="display: flex; flex-direction: column;">
+                                <div class="section-header">
+                                    <div>
+                                        <div class="section-title">Fluxo de Fluxograma das Tarefas</div>
+                                        <div class="section-sub">Identificação visual de gargalos no processo</div>
+                                    </div>
+                                    <span class="badge bd-blue">Tempo Real</span>
+                                </div>
+                                <div style="flex: 1; min-height: 220px; position: relative;">
+                                    <canvas id="weekChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card" style="border-top: 4px solid var(--red);">
+                                <div class="section-title" style="margin-bottom: 16px; display: flex; align-items: center; gap: 6px;">
+                                    <span>🔴 Painel de Riscos Críticos</span>
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <div style="display: flex; gap: 10px; background: var(--red-light); padding: 12px; border-radius: var(--radius-sm); border-left: 4px solid var(--red);">
+                                        <div style="font-size: 13px; color: #991b1b; font-weight: 500;">
+                                            <strong>5 tarefas críticas</strong> vencem hoje sem conclusão.
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 10px; background: var(--amber-light); padding: 12px; border-radius: var(--radius-sm); border-left: 4px solid var(--amber);">
+                                        <div style="font-size: 13px; color: #92400e; font-weight: 500;">
+                                            <strong>João Silva</strong> está sem registrar atividade há 3h.
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 10px; background: var(--red-light); padding: 12px; border-radius: var(--radius-sm); border-left: 4px solid var(--red);">
+                                        <div style="font-size: 13px; color: #991b1b; font-weight: 500;">
+                                            Setor de <strong>Infraestrutura TI</strong> acumula 18 atrasos.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="section-header">
+                                <div>
+                                    <div class="section-title">Dashboard de Produtividade Inteligente</div>
+                                    <div class="section-sub">Métricas avançadas: entrega real e consistência operacional</div>
+                                </div>
+                                <span class="badge bd-green">Foco em Entrega</span>
+                            </div>
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Funcionário</th>
+                                            <th>Eficiência</th>
+                                            <th>Prazo Cumprido</th>
+                                            <th>Tasks Críticas Entregues</th>
+                                            <th>Tempo Médio</th>
+                                            <th>Consistência Semanal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>João Silva</strong></td>
+                                            <td><span style="color: var(--teal); font-weight: 700;">91%</span></td>
+                                            <td>97%</td>
+                                            <td style="text-align: center; font-weight: 600;">14</td>
+                                            <td>38 min</td>
+                                            <td><span class="badge bd-green">Alta</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Maria Costa</strong></td>
+                                            <td><span style="color: var(--blue); font-weight: 700;">84%</span></td>
+                                            <td>88%</td>
+                                            <td style="text-align: center; font-weight: 600;">9</td>
+                                            <td>52 min</td>
+                                            <td><span class="badge bd-blue">Média</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Ana Souza</strong></td>
+                                            <td><span style="color: var(--teal); font-weight: 700;">89%</span></td>
+                                            <td>91%</td>
+                                            <td style="text-align: center; font-weight: 600;">11</td>
+                                            <td>44 min</td>
+                                            <td><span class="badge bd-green">Alta</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div id="manager-employees" style="display:none;">
+                    <div class="topbar">
+                        <div>
+                            <div class="topbar-title">Funcionários</div>
+                            <div class="topbar-subtitle">Cadastro e acompanhamento da equipe</div>
+                        </div>
+                        <div class="topbar-actions">
+                            <input class="form-control" type="search" placeholder="🔍 Buscar funcionário..." style="width:200px;height:36px;" />
+                            <button class="btn btn-primary btn-sm" onclick="showManagerScreen('new-employee')">+ Novo Funcionário</button>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <div class="chip-row" style="margin-bottom:20px;">
+                            <div class="chip active">Todos (8)</div>
+                            <div class="chip">Operadores (3)</div>
+                            <div class="chip">Conferentes (2)</div>
+                            <div class="chip">Motoristas (2)</div>
+                            <div class="chip">Supervisores (1)</div>
+                        </div>
+                        <div class="grid-3" id="emp-cards-grid"></div>
+                    </div>
+                </div>
+
+                <div id="manager-emp-detail" style="display:none;">
+                    <div class="topbar">
+                        <div>
+                            <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('employees')">← Voltar</button>
+                        </div>
+                        <div style="margin-left:12px;">
+                            <div class="topbar-title" id="detail-topbar-name">Detalhes do Funcionário</div>
+                            <div class="topbar-subtitle">Atividades designadas e histórico</div>
+                        </div>
+                        <div class="topbar-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('new-activity')">+ Designar Atividade</button>
+                            <button class="btn btn-danger btn-sm">✏️ Editar</button>
+                        </div>
+                    </div>
+                    <div class="page-content" id="emp-detail-content"></div>
+                </div>
+
+                <div id="manager-activities" style="display:none;">
+                    <div class="topbar">
+                        <div>
+                            <div class="topbar-title">Atividades</div>
+                            <div class="topbar-subtitle">Gerenciamento completo de tarefas da equipe</div>
+                        </div>
+                        <div class="topbar-actions">
+                            <input class="form-control" type="search" placeholder="🔍 Buscar atividade..." style="width:200px;height:36px;" />
+                            <button class="btn btn-primary btn-sm" onclick="showManagerScreen('new-activity')">+ Nova Atividade</button>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <div class="chip-row" style="margin-bottom:20px;">
+                            <div class="chip active">Todas (13)</div>
+                            <div class="chip">Concluídas (8)</div>
+                            <div class="chip">Em andamento (2)</div>
+                            <div class="chip">Pendentes (3)</div>
+                        </div>
+                        <div class="card">
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Status</th>
+                                            <th>Atividade</th>
+                                            <th>Funcionário</th>
+                                            <th>Setor</th>
+                                            <th>Tempo</th>
+                                            <th>Progresso</th>
+                                            <th>Justificativa</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="activities-table"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manager-new-activity" style="display:none;">
+                    <div class="topbar">
+                        <div>
+                            <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('activities')">← Voltar</button>
+                        </div>
+                        <div style="margin-left:12px;">
+                            <div class="topbar-title">Nova Atividade</div>
+                            <div class="topbar-subtitle">Cadastrar e designar atividade para a equipe</div>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <div class="grid-2">
+                            <div>
+                                <div class="card">
+                                    <div class="form-section">
+                                        <div class="form-section-title">📋 Informações da Atividade</div>
+                                        <div class="form-group">
+                                            <label class="form-label">Nome da Atividade *</label>
+                                            <input class="form-control" type="text" placeholder="Ex: Descarga navio São João — Container A7" />
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Descrição</label>
+                                            <textarea class="form-control" placeholder="Descreva os detalhes da atividade, pontos de atenção, equipamentos necessários..."></textarea>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label class="form-label">Categoria *</label>
+                                                <select class="form-control">
+                                                    <option>Descarga de Navio</option>
+                                                    <option>Transporte Interno</option>
+                                                    <option>Conferência de Carga</option>
+                                                    <option>Inventário</option>
+                                                    <option>Relatório Operacional</option>
+                                                    <option>Manutenção</option>
+                                                    <option>Outro</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Prioridade</label>
+                                                <select class="form-control">
+                                                    <option>🟡 Normal</option>
+                                                    <option>🔴 Alta</option>
+                                                    <option>⚡ Urgente</option>
+                                                    <option>🟢 Baixa</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:12px; justify-content:flex-end;">
+                                        <button class="btn btn-secondary" onclick="showManagerScreen('activities')">Cancelar</button>
+                                        <button class="btn btn-primary" onclick="saveActivity()">✅ Cadastrar Atividade</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manager-new-employee" style="display:none;">
+                    <div class="topbar">
+                        <div>
+                            <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('employees')">← Voltar</button>
+                        </div>
+                        <div style="margin-left:12px;">
+                            <div class="topbar-title">Novo Funcionário</div>
+                            <div class="topbar-subtitle">Cadastrar colaborador no sistema</div>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <div class="grid-2">
+                            <div class="card">
+                                <div style="display:flex; gap:12px; justify-content:flex-end; margin-top: 20px;">
+                                    <button class="btn btn-secondary" onclick="showManagerScreen('employees')">Cancelar</button>
+                                    <button class="btn btn-primary" onclick="saveEmployee()">✅ Cadastrar Funcionário</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manager-reports" style="display:none;">
+                    <div class="topbar">
+                        <div>
+                            <div class="topbar-title">Relatórios</div>
+                            <div class="topbar-subtitle">Análise de desempenho da equipe</div>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        </div>
+                </div>
+
             </div>
-
-            <div>
-              <div class="card" style="margin-bottom:16px;">
-                <div class="section-title" style="margin-bottom:12px;">📌 Pré-visualização</div>
-                <div style="border:1.5px dashed var(--gray200); border-radius:var(--radius); padding:16px;">
-                  <div style="font-size:13px; font-weight:700; color:var(--gray800); margin-bottom:6px;">Descarga navio São João</div>
-                  <div style="font-size:12px; color:var(--gray500); margin-bottom:10px;">⏱ 4 horas · 👷 João Silva · 📍 Cais — Berço 1</div>
-                  <span class="badge bd-amber">🔴 Alta Prioridade</span>
-                  <div class="progress-wrap" style="margin-top:12px;">
-                    <div class="progress-bar pb-amber" style="width:0%"></div>
-                  </div>
-                  <div style="font-size:11px; color:var(--gray400); margin-top:4px;">0% concluído</div>
-                </div>
-              </div>
-
-              <div class="card">
-                <div class="section-title" style="margin-bottom:12px;">📊 Carga de trabalho hoje</div>
-                <div id="workload-preview">
-                  <div style="font-size:12px; color:var(--gray500); margin-bottom:8px;">João Silva — Operador</div>
-                  <div class="progress-wrap" style="margin-bottom:4px;"><div class="progress-bar pb-amber" style="width:75%"></div></div>
-                  <div style="font-size:11px; color:var(--gray500);">3 atividades · 4h ocupadas · 75% concluído</div>
-                  <div style="height:12px;"></div>
-                  <div style="font-size:12px; color:var(--gray500); margin-bottom:8px;">Maria Costa — Conferente</div>
-                  <div class="progress-wrap" style="margin-bottom:4px;"><div class="progress-bar pb-amber" style="width:40%"></div></div>
-                  <div style="font-size:11px; color:var(--gray500);">3 atividades · 6h ocupadas · 40% concluído</div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-
-      <div id="manager-new-employee" style="display:none;">
-        <div class="topbar">
-          <div>
-            <button class="btn btn-secondary btn-sm" onclick="showManagerScreen('employees')">← Voltar</button>
-          </div>
-          <div style="margin-left:12px;">
-            <div class="topbar-title">Novo Funcionário</div>
-            <div class="topbar-subtitle">Cadastrar colaborador no sistema</div>
-          </div>
-        </div>
-        <div class="page-content">
-          <div class="grid-2">
-            <div class="card">
-              <div class="form-section">
-                <div class="form-section-title">👤 Dados Pessoais</div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Nome *</label>
-                    <input class="form-control" type="text" placeholder="Nome completo" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">CPF *</label>
-                    <input class="form-control" type="text" placeholder="000.000.000-00" />
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Data de Nascimento</label>
-                    <input class="form-control" type="date" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Telefone</label>
-                    <input class="form-control" type="tel" placeholder="(98) 9 0000-0000" />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">E-mail</label>
-                  <input class="form-control" type="email" placeholder="nome@transportadora.com.br" />
-                </div>
-              </div>
-
-              <div class="form-section">
-                <div class="form-section-title">💼 Dados Profissionais</div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Cargo *</label>
-                    <select class="form-control">
-                      <option>Operador de Pátio</option>
-                      <option>Conferente</option>
-                      <option>Motorista</option>
-                      <option>Supervisor</option>
-                      <option>Auxiliar de Operações</option>
-                      <option>Técnico de Manutenção</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Setor *</label>
-                    <select class="form-control">
-                      <option>Operações Portuárias</option>
-                      <option>Logística</option>
-                      <option>Conferência</option>
-                      <option>Transporte</option>
-                      <option>Manutenção</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Matrícula</label>
-                    <input class="form-control" type="text" placeholder="Ex: TI-2024-009" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Turno</label>
-                    <select class="form-control">
-                      <option>Manhã (06h–14h)</option>
-                      <option>Tarde (14h–22h)</option>
-                      <option>Noite (22h–06h)</option>
-                      <option>Administrativo</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Data de Admissão</label>
-                  <input class="form-control" type="date" />
-                </div>
-              </div>
-
-              <div class="form-section">
-                <div class="form-section-title">🔐 Acesso ao Sistema</div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label class="form-label">Login de Usuário</label>
-                    <input class="form-control" type="text" placeholder="nome.sobrenome" />
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Senha Inicial</label>
-                    <input class="form-control" type="password" placeholder="Gerada automaticamente" />
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="form-label">Perfil de Acesso</label>
-                  <select class="form-control">
-                    <option>Funcionário — Visualiza apenas suas atividades</option>
-                    <option>Supervisor — Visualiza sua equipe</option>
-                    <option>Gestor — Acesso completo</option>
-                  </select>
-                </div>
-              </div>
-
-              <div style="display:flex; gap:12px; justify-content:flex-end;">
-                <button class="btn btn-secondary" onclick="showManagerScreen('employees')">Cancelar</button>
-                <button class="btn btn-primary" onclick="saveEmployee()">✅ Cadastrar Funcionário</button>
-              </div>
-            </div>
-
-            <div>
-              <div class="card" style="margin-bottom:16px;">
-                <div class="section-title" style="margin-bottom:12px;">ℹ️ Instruções</div>
-                <div style="font-size:13px; color:var(--gray600); line-height:1.6;">
-                  <p style="margin-bottom:10px;">• O login será enviado automaticamente por e-mail ao funcionário após o cadastro.</p>
-                  <p style="margin-bottom:10px;">• A senha inicial deve ser alterada no primeiro acesso.</p>
-                  <p style="margin-bottom:10px;">• Funcionários com perfil <strong>Funcionário</strong> visualizam apenas suas próprias atividades.</p>
-                  <p>• Supervisores podem ver as atividades de sua equipe, mas não podem cadastrar novos funcionários.</p>
-                </div>
-              </div>
-              <div class="card">
-                <div class="section-title" style="margin-bottom:12px;">👥 Equipe atual</div>
-                <div style="display:flex; flex-direction:column; gap:10px;" id="emp-quick-list"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="manager-reports" style="display:none;">
-        <div class="topbar">
-          <div>
-            <div class="topbar-title">Relatórios</div>
-            <div class="topbar-subtitle">Análise de desempenho da equipe</div>
-          </div>
-          <div class="topbar-actions">
-            <select class="form-control" style="height:36px;width:150px;">
-              <option>Esta semana</option>
-              <option>Este mês</option>
-              <option>Últimos 30 dias</option>
-              <option>Personalizado</option>
-            </select>
-            <button class="btn btn-secondary btn-sm">⬇️ Exportar PDF</button>
-          </div>
-        </div>
-        <div class="page-content">
-          <div class="metric-grid" style="margin-bottom:24px;">
-            <div class="metric-card">
-              <div class="metric-icon mi-teal">✅</div>
-              <div>
-                <div class="metric-label">Taxa de Conclusão</div>
-                <div class="metric-value">78%</div>
-                <div class="metric-delta delta-up">↑ Boa performance</div>
-              </div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-icon mi-blue">📋</div>
-              <div>
-                <div class="metric-label">Total de Atividades</div>
-                <div class="metric-value">67</div>
-                <div class="metric-delta">esta semana</div>
-              </div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-icon mi-amber">⏱</div>
-              <div>
-                <div class="metric-label">Tempo Médio/Atividade</div>
-                <div class="metric-value">2.4h</div>
-                <div class="metric-delta">dentro do esperado</div>
-              </div>
-            </div>
-            <div class="metric-card">
-              <div class="metric-icon mi-red">⚠️</div>
-              <div>
-                <div class="metric-label">Atrasos na Semana</div>
-                <div class="metric-value">8</div>
-                <div class="metric-delta delta-down">↓ vs 12 semana ant.</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid-2" style="margin-bottom:20px;">
-            <div class="card">
-              <div class="section-title" style="margin-bottom:14px;">📊 Desempenho por Funcionário</div>
-              <table>
-                <thead>
-                  <tr><th>Funcionário</th><th>Atividades</th><th>Concluídas</th><th>Taxa</th><th>Atrasos</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>João Silva</td><td>14</td><td>12</td><td><span class="badge bd-green">86%</span></td><td>1</td></tr>
-                  <tr><td>Maria Costa</td><td>12</td><td>9</td><td><span class="badge bd-green">75%</span></td><td>2</td></tr>
-                  <tr><td>Ana Souza</td><td>10</td><td>8</td><td><span class="badge bd-green">80%</span></td><td>0</td></tr>
-                  <tr><td>Ricardo Alves</td><td>8</td><td>4</td><td><span class="badge bd-amber">50%</span></td><td>3</td></tr>
-                  <tr><td>Lucas Martins</td><td>11</td><td>10</td><td><span class="badge bd-green">91%</span></td><td>0</td></tr>
-                  <tr><td>Fernanda Nunes</td><td>12</td><td>9</td><td><span class="badge bd-green">75%</span></td><td>2</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="card">
-              <div class="section-title" style="margin-bottom:14px;">📈 Evolução Semanal</div>
-              <canvas id="reportChart" height="200"></canvas>
-            </div>
-          </div>
-
-          <div class="card">
-            <div class="section-title" style="margin-bottom:14px;">📋 Atividades com Maior Tempo de Execução</div>
-            <table>
-              <thead><tr><th>Atividade</th><th>Funcionário</th><th>Estimado</th><th>Real</th><th>Variação</th></tr></thead>
-              <tbody>
-                <tr><td>Rota carga seca Galpão 1→5</td><td>Ricardo Alves</td><td>2 dias</td><td>3 dias</td><td><span class="badge bd-red">+50%</span></td></tr>
-                <tr><td>Inventário containers B-12</td><td>Maria Costa</td><td>3h</td><td>4.5h</td><td><span class="badge bd-amber">+50%</span></td></tr>
-                <tr><td>Conferência manifesto M-07</td><td>Fernanda Nunes</td><td>2h</td><td>2.8h</td><td><span class="badge bd-amber">+40%</span></td></tr>
-                <tr><td>Descarga navio Anita</td><td>João Silva</td><td>2h</td><td>2h</td><td><span class="badge bd-green">No prazo</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<div class="screen" id="screen-employee-app">
-  <div class="emp-mode-layout">
-    <div class="emp-topbar">
-      <div class="emp-topbar-logo"><span>🚢</span> PortoTask</div>
-      <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
-        <div style="text-align:right;">
-          <div style="font-size:12px; color:white; font-weight:600;">Maria Costa</div>
-          <div style="font-size:10px; color:#8aabb8;">Conferente · TI-2022-004</div>
-        </div>
-        <div class="avatar av-teal" style="width:36px;height:36px;font-size:13px;">MC</div>
-      </div>
-    </div>
-
-    <div id="emp-page-home" class="emp-content">
-      <div class="emp-hero">
-        <div class="emp-hero-name">Bom dia, Maria! 👋</div>
-        <div class="emp-hero-role">Conferente · Turno Manhã · <span id="emp-today-date"></span></div>
-        <div style="margin:14px 0 10px;">
-          <div style="display:flex;justify-content:space-between;font-size:12px;color:#8aabb8;margin-bottom:6px;">
-            <span>Progresso de hoje</span>
-            <span style="color:var(--amber);font-weight:700;">40%</span>
-          </div>
-          <div class="progress-wrap" style="background:rgba(255,255,255,.15);height:10px;">
-            <div class="progress-bar pb-amber" style="width:40%;height:10px;border-radius:20px;"></div>
-          </div>
-        </div>
-        <div class="emp-hero-stats">
-          <div class="emp-hero-stat"><div class="emp-hero-stat-val">1</div><div class="emp-hero-stat-lab">Concluídas</div></div>
-          <div class="emp-hero-stat"><div class="emp-hero-stat-val">1</div><div class="emp-hero-stat-lab">Andamento</div></div>
-          <div class="emp-hero-stat"><div class="emp-hero-stat-val">1</div><div class="emp-hero-stat-lab">Pendentes</div></div>
-        </div>
-      </div>
-
-      <div style="font-size:12px;font-weight:700;color:var(--gray500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Minhas atividades de hoje</div>
-
-      <div class="mobile-card">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-          <div>
-            <div class="mobile-card-title">Conferência manifesto M-09</div>
-            <div style="font-size:12px;color:var(--gray500);">⏱ 2 horas · 📍 Galpão 2 · Peso: 33%</div>
-          </div>
-          <span class="badge bd-green">✅ Concluída</span>
-        </div>
-        <div class="progress-wrap"><div class="progress-bar pb-green" style="width:100%"></div></div>
-        <div style="font-size:11px;color:var(--gray400);margin-top:4px;">Finalizada às 10h15 — 100%</div>
-      </div>
-
-      <div class="mobile-card" style="border-color:var(--amber);border-width:1.5px;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-          <div>
-            <div class="mobile-card-title">Inventário containers B-12</div>
-            <div style="font-size:12px;color:var(--gray500);">⏱ 3 horas · 📍 Pátio Principal · Peso: 50%</div>
-          </div>
-          <span class="badge bd-amber">🔄 Em andamento</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gray600);margin-bottom:4px;">
-          <span>Progresso atual</span>
-          <strong id="inv-pct-emp">50%</strong>
-        </div>
-        <div class="progress-wrap"><div class="progress-bar pb-amber" id="inv-bar-emp" style="width:50%"></div></div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:10px;">
-          <span style="font-size:12px;color:var(--gray500);">Atualizar:</span>
-          <input type="range" min="0" max="100" value="50" step="10" style="flex:1;" oninput="updateEmpTask(this.value)">
-          <span id="inv-range-val" style="font-size:12px;font-weight:700;color:var(--amber);min-width:32px;">50%</span>
-        </div>
-        <div style="margin-top:10px;">
-          <label class="form-label">Justificativa / Atualização</label>
-          <textarea class="form-control" style="height:72px;font-size:13px;" placeholder="Explique o status atual, dificuldades encontradas...">Atraso na chegada do navio às 11h. Containers do lote B-12 não ficaram disponíveis antes do meio-dia. Retomando agora.</textarea>
-        </div>
-        <button class="btn btn-primary btn-full" style="margin-top:10px;" onclick="showToast('✅ Progresso salvo com sucesso!')">💾 Salvar atualização</button>
-      </div>
-
-      <div class="mobile-card">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-          <div>
-            <div class="mobile-card-title">Relatório de saídas diário</div>
-            <div style="font-size:12px;color:var(--gray500);">⏱ 1 hora · 📍 Escritório · Peso: 17%</div>
-          </div>
-          <span class="badge bd-red">⏳ Pendente</span>
-        </div>
-        <div class="progress-wrap"><div class="progress-bar pb-red" style="width:2%"></div></div>
-        <div style="margin-top:10px;">
-          <label class="form-label">Por que ainda não iniciou?</label>
-          <textarea class="form-control" style="height:60px;font-size:13px;" placeholder="Explique o motivo para o gestor..."></textarea>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:10px;">
-          <button class="btn btn-secondary btn-sm" onclick="showToast('Justificativa enviada ao gestor!')">Enviar justificativa</button>
-          <button class="btn btn-primary btn-sm" onclick="showToast('✅ Atividade iniciada!')">Iniciar agora</button>
-        </div>
-      </div>
-      <div style="height:16px;"></div>
     </div>
 
-    <div id="emp-page-history" class="emp-content" style="display:none;">
-      <div style="font-size:12px;font-weight:700;color:var(--gray500);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;">Histórico de atividades</div>
+    <div class="screen" id="screen-employee-app">
+        <div class="emp-mode-layout">
+            <div class="emp-topbar">
+                <div class="emp-topbar-logo"><span>🚢</span> PortoTask</div>
+                <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
+                    <div style="text-align:right;">
+                        <div style="font-size:12px; color:white; font-weight:600;">Maria Costa</div>
+                    </div>
+                </div>
+            </div>
 
-      <div class="mobile-card">
-        <div style="font-size:12px;font-weight:700;color:var(--gray400);margin-bottom:10px;">Segunda, 05/05/2025</div>
-        <div class="task-item"><div class="task-dot" style="background:var(--teal)"></div><div class="task-body"><div class="task-name">Conferência manifesto M-08</div><div class="task-meta">2h · Concluída às 11h20</div></div><span class="badge bd-green">100%</span></div>
-        <div class="task-item"><div class="task-dot" style="background:var(--teal)"></div><div class="task-body"><div class="task-name">Inventário containers A-7</div><div class="task-meta">3h · Concluída às 15h45</div></div><span class="badge bd-green">100%</span></div>
-        <div class="task-item"><div class="task-dot" style="background:var(--amber)"></div><div class="task-body"><div class="task-name">Relatório operacional semanal</div><div class="task-meta">2h · Parcialmente concluída</div></div><span class="badge bd-amber">80%</span></div>
-      </div>
+            <div id="emp-page-home" class="emp-content">
+                <div class="emp-hero">
+                    <div class="emp-hero-name">Bom dia, Maria! 👋</div>
+                </div>
+                </div>
 
-      <div class="mobile-card">
-        <div style="font-size:12px;font-weight:700;color:var(--gray400);margin-bottom:10px;">Sexta, 02/05/2025</div>
-        <div class="task-item"><div class="task-dot" style="background:var(--teal)"></div><div class="task-body"><div class="task-name">Conferência manifesto M-07</div><div class="task-meta">2h · Concluída no prazo</div></div><span class="badge bd-green">100%</span></div>
-        <div class="task-item"><div class="task-dot" style="background:var(--teal)"></div><div class="task-body"><div class="task-name">Controle de entrada — Berço 2</div><div class="task-meta">4h · Concluída</div></div><span class="badge bd-green">100%</span></div>
-      </div>
-
-      <div style="background:var(--teal-light);border-radius:var(--radius);padding:14px;text-align:center;">
-        <div style="font-size:18px;font-weight:700;color:var(--teal2);">82%</div>
-        <div style="font-size:12px;color:var(--gray500);">Taxa de conclusão — últimos 7 dias</div>
-      </div>
-      <div style="height:16px;"></div>
+            <nav class="emp-nav">
+                <button class="emp-nav-item active" id="emp-nav-home" onclick="switchEmpPage('home')">
+                    <span class="nav-icon">🏠</span>Hoje
+                </button>
+                <button class="emp-nav-item" id="emp-nav-history" onclick="switchEmpPage('history')">
+                    <span class="nav-icon">📅</span>Histórico
+                </button>
+                <button class="emp-nav-item" onclick="doLogout()">
+                    <span class="nav-icon">🚪</span>Sair
+                </button>
+            </nav>
+        </div>
     </div>
-
-    <nav class="emp-nav">
-      <button class="emp-nav-item active" id="emp-nav-home" onclick="switchEmpPage('home')">
-        <span class="nav-icon">🏠</span>Hoje
-      </button>
-      <button class="emp-nav-item" id="emp-nav-history" onclick="switchEmpPage('history')">
-        <span class="nav-icon">📅</span>Histórico
-      </button>
-      <button class="emp-nav-item" onclick="doLogout()">
-        <span class="nav-icon">🚪</span>Sair
-      </button>
-    </nav>
-  </div>
-</div>
-
-<div class="modal-bg" id="modal-redesign">
-  <div class="modal-box">
-    <div class="modal-title">🔄 Redesignar Atividade</div>
-    <div class="modal-sub">Transferir atividade para outro funcionário</div>
-    <div class="form-group">
-      <label class="form-label">Atividade</label>
-      <input class="form-control" value="Transporte ao galpão 3" readonly style="background:var(--gray50);" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">De</label>
-      <input class="form-control" value="João Silva" readonly style="background:var(--gray50);" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Novo responsável *</label>
-      <select class="form-control">
-        <option>Selecione...</option>
-        <option>Maria Costa — Conferente</option>
-        <option>Ana Souza — Operadora</option>
-        <option>Ricardo Alves — Motorista</option>
-        <option>Lucas Martins — Motorista</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Motivo da redesignação</label>
-      <textarea class="form-control" placeholder="Por que está transferindo?"></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('modal-redesign')">Cancelar</button>
-      <button class="btn btn-primary" onclick="closeModal('modal-redesign');showToast('✅ Atividade redesignada!')">Confirmar</button>
-    </div>
-  </div>
-</div>
-
 
 </body>
 </html>
