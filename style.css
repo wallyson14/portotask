@@ -1,4 +1,3 @@
-
 :root {
   --navy: #0f1f35;
   --navy2: #172b44;
@@ -143,6 +142,7 @@ select.form-control { cursor: pointer; }
   position: fixed;
   top: 0; left: 0; bottom: 0;
   z-index: 100;
+  transition: transform .3s ease;
 }
  
 .sidebar-brand {
@@ -219,6 +219,7 @@ select.form-control { cursor: pointer; }
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  transition: margin-left .3s ease;
 }
  
 .topbar {
@@ -302,7 +303,7 @@ select.form-control { cursor: pointer; }
 .bd-gray { background: var(--gray100); color: var(--gray500); }
  
 /* ============ TABLE ============ */
-.table-wrap { overflow-x: auto; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table { width: 100%; border-collapse: collapse; }
 th {
   text-align: left; padding: 10px 14px;
@@ -380,6 +381,7 @@ textarea.form-control { height: 90px; resize: vertical; }
  
 /* ============ EMPLOYEE MODE ============ */
 .emp-mode-layout {
+  display: flex;
   flex-direction: column;
   max-width: 480px;
   margin: 0 auto;
@@ -395,7 +397,12 @@ textarea.form-control { height: 90px; resize: vertical; }
 }
 .emp-topbar-logo { font-size: 15px; font-weight: 700; color: white; display: flex; align-items: center; gap: 8px; }
 .emp-topbar-logo span { font-size: 18px; }
-.emp-content { flex: 1; padding: 16px; overflow-y: auto; }
+.emp-content { 
+  flex: 1; 
+  padding: 16px; 
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; 
+}
 .emp-nav {
   background: var(--white);
   border-top: 1px solid var(--gray200);
@@ -425,6 +432,7 @@ textarea.form-control { height: 90px; resize: vertical; }
 .emp-hero-stat-val { font-size: 22px; font-weight: 700; }
 .emp-hero-stat-lab { font-size: 10px; color: #8aabb8; }
  
+/* ============ MOBILE CARDS ============ */
 .mobile-card {
   background: var(--white);
   border-radius: var(--radius);
@@ -494,3 +502,195 @@ textarea.form-control { height: 90px; resize: vertical; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--gray300); border-radius: 3px; }
+
+/* ============ INTERFACE ADAPTATIVA E RESPONSIVA (MEDIA QUERIES) ============ */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-w: 0px;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    width: 240px;
+  }
+  .main-content {
+    margin-left: 0 !important;
+  }
+  .topbar {
+    padding: 0 16px;
+  }
+  .page-content {
+    padding: 16px;
+  }
+  .metric-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+  }
+  .dashboard-grid, .grid-2, .grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-row, .form-row-3 {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  .role-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .metric-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .topbar-actions .topbar-date, .topbar-subtitle {
+    display: none;
+  }
+  .login-box {
+    width: 100%;
+    padding: 24px 16px;
+  }
+}
+
+/* ==========================================================================
+   ============ CONTEXTO PREMIUM LIGHT MODE - PAINEL DO GESTOR =============
+   ========================================================================== */
+
+/* Garante o fundo claro uniforme por todo o painel do gestor */
+.screen#screen-manager, 
+#manager-dashboard,
+.main-content:has(#manager-dashboard) {
+  background-color: var(--gray100) !important;
+  color: var(--gray800) !important;
+}
+
+/* Mantém os componentes da Topbar legíveis e integrados no claro */
+.screen#screen-manager .topbar {
+  background: var(--white) !important;
+  border-bottom: 1px solid var(--gray200) !important;
+}
+.screen#screen-manager .topbar-title {
+  color: var(--gray800) !important;
+}
+.screen#screen-manager .topbar-date {
+  background: var(--gray100) !important;
+  color: var(--gray500) !important;
+}
+
+/* Configuração dos Cards no modo claro */
+#manager-dashboard .card,
+#manager-dashboard .metric-card {
+  background: var(--white) !important;
+  border: 1px solid var(--gray200) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+/* Cores dos Textos Principais nos Cards */
+#manager-dashboard .section-title,
+#manager-dashboard .metric-value,
+#manager-dashboard .task-name,
+#manager-dashboard .emp-name,
+#manager-dashboard .emp-stat-val {
+  color: var(--gray800) !important;
+}
+
+/* Cores dos Subtítulos/Labels nos Cards */
+#manager-dashboard .section-sub,
+#manager-dashboard .metric-label,
+#manager-dashboard .task-meta,
+#manager-dashboard .emp-role-text {
+  color: var(--gray500) !important;
+}
+
+/* ============ TABELAS TOTALMENTE INTEGRADAS AO MODO CLARO ============ */
+#manager-dashboard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#manager-dashboard th {
+  background: var(--gray50) !important;
+  color: var(--gray500) !important;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  border-bottom: 1.5px solid var(--gray200) !important;
+  padding: 12px 14px;
+}
+
+#manager-dashboard td {
+  padding: 14px 14px;
+  color: var(--gray700) !important;
+  border-bottom: 1px solid var(--gray100) !important;
+  background: transparent !important;
+}
+
+/* Efeito Hover suave nas linhas da tabela no tema claro */
+#manager-dashboard tr:hover td {
+  background: var(--gray50) !important;
+}
+
+#manager-dashboard tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============ COMPONENTES OPERACIONAIS ============ */
+#manager-dashboard .task-item {
+  border-bottom: 1px solid var(--gray100);
+  padding: 14px 0;
+}
+
+/* Inputs claros se adaptando ao painel do gestor */
+#manager-dashboard .form-control {
+  background: var(--white);
+  border-color: var(--gray200);
+  color: var(--gray800);
+}
+#manager-dashboard .form-control:focus {
+  border-color: var(--teal);
+}
+
+/* Gráficos limpos */
+#manager-dashboard canvas {
+  filter: none !important;
+}
+
+/* ==========================================================================
+   ============ CORREÇÕES EXTRAS DE RESPONSIVIDADE FLUIDA ===================
+   ========================================================================== */
+
+@media (max-width: 1400px) {
+  #manager-dashboard .metric-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  #manager-dashboard .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-sm);
+  }
+}
+
+@media (max-width: 768px) {
+  #manager-dashboard .metric-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  #manager-dashboard .page-content {
+    padding: 16px 12px;
+  }
+  #manager-dashboard .card {
+    padding: 16px !important;
+  }
+}
